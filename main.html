@@ -1,0 +1,1698 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Steam Universe | Игровая платформа</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #66c0f4;
+            --primary-dark: #1a44c2;
+            --primary-light: #47bfff;
+            --background: #1b2838;
+            --background-light: #2a3f5a;
+            --background-dark: #171a21;
+            --text: #c6d4df;
+            --text-light: #ffffff;
+            --text-muted: #8f98a0;
+            --accent: #5ba32b;
+            --accent-light: #6bb83b;
+            --discount: #4c6b22;
+            --discount-text: #a4d007;
+            --danger: #c0392b;
+            --danger-light: #e74c3c;
+            --card-gradient: linear-gradient(135deg, #2a3f5a 0%, #1b2838 100%);
+            --header-gradient: linear-gradient(90deg, #171a21 0%, #2a3f5a 100%);
+            --button-gradient: linear-gradient(90deg, #47bfff 0%, #1a44c2 100%);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+        }
+        
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            overflow-x: hidden;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        
+        /* Анимации */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(102, 192, 244, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(102, 192, 244, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(102, 192, 244, 0); }
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .header {
+            background: var(--header-gradient);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.7);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+        
+        .header.scrolled {
+            padding: 10px 30px;
+            background: rgba(23, 26, 33, 0.95);
+            backdrop-filter: blur(10px);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: transform 0.3s ease;
+        }
+        
+        .logo:hover {
+            transform: scale(1.02);
+        }
+        
+        .logo img {
+            height: 40px;
+            transition: transform 0.3s ease;
+        }
+        
+        .logo:hover img {
+            transform: rotate(-5deg);
+        }
+        
+        .logo h1 {
+            color: #b8b6b4;
+            font-size: 24px;
+            font-weight: normal;
+            background: linear-gradient(90deg, #b8b6b4 0%, #66c0f4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+        }
+        
+        .logo h1::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+        
+        .logo:hover h1::after {
+            width: 100%;
+        }
+        
+        .nav {
+            display: flex;
+            gap: 25px;
+        }
+        
+        .nav a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            position: relative;
+            padding: 5px 0;
+        }
+        
+        .nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+        
+        .nav a:hover {
+            color: var(--primary);
+        }
+        
+        .nav a.active {
+            color: var(--primary);
+        }
+        
+        .nav a.active::after {
+            width: 100%;
+        }
+        
+        .nav a:hover::after {
+            width: 100%;
+        }
+        
+        .user {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 5px 10px;
+            border-radius: 20px;
+        }
+        
+        .user:hover {
+            background: rgba(102, 192, 244, 0.1);
+        }
+        
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: #56707f;
+            background-size: cover;
+            border: 2px solid var(--primary);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .user-avatar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(102, 192, 244, 0.3);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .user:hover .user-avatar::before {
+            opacity: 1;
+        }
+        
+        .user:hover .user-avatar {
+            transform: scale(1.1);
+            box-shadow: 0 0 10px rgba(102, 192, 244, 0.5);
+        }
+        
+        .username {
+            color: var(--text);
+            font-size: 14px;
+            transition: color 0.3s ease;
+        }
+        
+        .user:hover .username {
+            color: var(--primary);
+        }
+        
+        .main-content {
+            padding: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+            animation: fadeIn 0.8s ease-out;
+            display: none;
+        }
+        
+        .main-content.active {
+            display: block;
+        }
+        
+        .section {
+            margin-bottom: 50px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+        
+        .section:nth-child(1) { animation-delay: 0.2s; }
+        .section:nth-child(2) { animation-delay: 0.4s; }
+        .section:nth-child(3) { animation-delay: 0.6s; }
+        
+        .section-title {
+            color: var(--text-light);
+            font-size: 26px;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(61, 68, 80, 0.5);
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100px;
+            height: 2px;
+            background: var(--primary);
+        }
+        
+        .section-title i {
+            margin-right: 15px;
+            color: var(--primary);
+            font-size: 28px;
+        }
+        
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+        
+        .game-card {
+            background: var(--card-gradient);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            height: 220px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .game-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.4);
+        }
+        
+        .game-image {
+            flex: 1;
+            background-color: #2a3f5a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .game-card:hover .game-image {
+            background-color: #3d4f66;
+        }
+        
+        .game-info {
+            padding: 15px;
+            position: relative;
+            z-index: 1;
+            background: rgba(23, 26, 33, 0.7);
+        }
+        
+        .game-title {
+            color: var(--text-light);
+            font-size: 18px;
+            margin-bottom: 10px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+        
+        .game-card:hover .game-title {
+            color: var(--primary);
+        }
+        
+        .game-genre {
+            color: var(--text-muted);
+            font-size: 13px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .game-genre::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 4px;
+            background: var(--text-muted);
+            border-radius: 50%;
+        }
+        
+        .game-price {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .price {
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 18px;
+            transition: transform 0.3s ease;
+        }
+        
+        .game-card:hover .price {
+            transform: scale(1.05);
+        }
+        
+        .discount {
+            background-color: var(--discount);
+            color: var(--discount-text);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .game-card:hover .discount {
+            transform: scale(1.1);
+            box-shadow: 0 0 10px rgba(164, 208, 7, 0.3);
+        }
+        
+        .banner {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), 
+                        var(--background-light);
+            border-radius: 8px;
+            margin-bottom: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+            color: white;
+        }
+        
+        .banner-title {
+            color: var(--text-light);
+            font-size: 32px;
+            margin-bottom: 15px;
+            font-weight: 700;
+            background: linear-gradient(90deg, #ffffff 0%, var(--primary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+        }
+        
+        .banner-text {
+            color: var(--text);
+            margin-bottom: 25px;
+            font-size: 16px;
+        }
+        
+        .btn {
+            background: var(--button-gradient);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            font-size: 14px;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(26, 68, 194, 0.3);
+        }
+        
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: all 0.5s ease;
+        }
+        
+        .btn:hover {
+            background: linear-gradient(90deg, var(--primary-light) 0%, var(--primary-dark) 100%);
+            box-shadow: 0 6px 20px rgba(26, 68, 194, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        .btn:hover::after {
+            left: 100%;
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .footer {
+            background-color: var(--background-dark);
+            padding: 50px 30px 30px;
+            margin-top: 80px;
+            position: relative;
+            display: none;
+        }
+        
+        .footer.active {
+            display: block;
+        }
+        
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+        }
+        
+        .footer-column h3 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-size: 18px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background: var(--primary);
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column li {
+            margin-bottom: 12px;
+            transition: transform 0.3s ease;
+        }
+        
+        .footer-column li:hover {
+            transform: translateX(5px);
+        }
+        
+        .footer-column a {
+            color: var(--text);
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .footer-column a::before {
+            content: '→';
+            color: var(--primary);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .footer-column a:hover {
+            color: var(--primary);
+        }
+        
+        .footer-column a:hover::before {
+            opacity: 1;
+        }
+        
+        .copyright {
+            text-align: center;
+            margin-top: 50px;
+            color: var(--text-muted);
+            font-size: 13px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(61, 68, 80, 0.3);
+        }
+        
+        /* Модальные окна */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal.show {
+            opacity: 1;
+            display: flex;
+        }
+        
+        .modal-content {
+            background: var(--card-gradient);
+            padding: 40px;
+            border-radius: 10px;
+            width: 500px;
+            max-width: 90%;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6);
+            position: relative;
+            transform: scale(0.9);
+            opacity: 0;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(102, 192, 244, 0.2);
+        }
+        
+        .modal.show .modal-content {
+            transform: scale(1);
+            opacity: 1;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            color: var(--text);
+            font-size: 28px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+        
+        .close-modal:hover {
+            color: var(--primary);
+            transform: rotate(90deg);
+            background: rgba(102, 192, 244, 0.1);
+        }
+        
+        /* Прогресс-бары */
+        .progress-container {
+            margin: 25px 0;
+        }
+        
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            color: var(--text);
+            font-size: 14px;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background-color: var(--background-dark);
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+        
+        .progress {
+            height: 100%;
+            background: var(--button-gradient);
+            width: 0%;
+            transition: width 0.3s ease;
+            position: relative;
+            border-radius: 5px;
+        }
+        
+        .progress::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, 
+                      rgba(255, 255, 255, 0) 0%, 
+                      rgba(255, 255, 255, 0.3) 50%, 
+                      rgba(255, 255, 255, 0) 100%);
+            animation: progressShine 2s infinite;
+        }
+        
+        .crack-progress {
+            background: var(--danger);
+        }
+        
+        @keyframes progressShine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .download-info {
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-muted);
+            font-size: 13px;
+            margin-top: 10px;
+        }
+        
+        .btn-disabled {
+            background: #3d4450 !important;
+            cursor: not-allowed;
+            box-shadow: none !important;
+        }
+        
+        .btn-disabled:hover {
+            transform: none !important;
+        }
+        
+        .install-btn {
+            background: var(--accent);
+            margin-top: 20px;
+            width: 100%;
+            padding: 15px;
+            font-size: 16px;
+            box-shadow: 0 4px 15px rgba(91, 163, 43, 0.3);
+        }
+        
+        .install-btn:hover {
+            background: var(--accent-light);
+        }
+        
+        .danger-btn {
+            background: var(--danger);
+            box-shadow: 0 4px 15px rgba(192, 57, 43, 0.3);
+        }
+        
+        .danger-btn:hover {
+            background: var(--danger-light);
+        }
+        
+        .modal h3 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .modal h3 i {
+            font-size: 28px;
+        }
+        
+        .game-title-modal {
+            color: var(--text-light);
+            font-size: 20px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .cancel-btn {
+            background: transparent;
+            border: 1px solid var(--text-muted);
+            color: var(--text);
+            margin-left: 15px;
+        }
+        
+        .cancel-btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        
+        /* Анимация загрузки */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading-spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 3px solid var(--primary);
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+        
+        .btn-loading .loading-spinner {
+            display: inline-block;
+        }
+        
+        /* Вкладки */
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(61, 68, 80, 0.5);
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .tab.active {
+            color: var(--primary);
+            font-weight: bold;
+        }
+        
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--primary);
+        }
+        
+        .tab:hover {
+            color: var(--text-light);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Библиотека игр */
+        .library-container {
+            display: none;
+        }
+        
+        .library-container.active {
+            display: block;
+        }
+        
+        .library-game {
+            display: flex;
+            background: var(--card-gradient);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .library-game:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .library-game-image {
+            width: 120px;
+            height: 60px;
+            background-color: #2a3f5a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            margin-right: 20px;
+            border-radius: 4px;
+        }
+        
+        .library-game-info {
+            flex: 1;
+        }
+        
+        .library-game-title {
+            color: var(--text-light);
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+        
+        .library-game-genre {
+            color: var(--text-muted);
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+        
+        .library-game-status {
+            display: inline-block;
+            padding: 3px 8px;
+            background: var(--accent);
+            color: white;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        /* Адаптивность */
+        @media (max-width: 1024px) {
+            .game-grid {
+                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            }
+            
+            .banner {
+                height: 180px;
+                padding: 30px;
+            }
+            
+            .banner-title {
+                font-size: 28px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                padding: 15px;
+                gap: 15px;
+            }
+            
+            .nav {
+                gap: 15px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .banner {
+                height: 160px;
+                padding: 20px;
+            }
+            
+            .banner-title {
+                font-size: 24px;
+            }
+            
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 30px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .game-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .banner {
+                height: 140px;
+            }
+            
+            .banner-title {
+                font-size: 20px;
+            }
+            
+            .section-title {
+                font-size: 22px;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .modal-content {
+                padding: 25px;
+            }
+        }
+        
+        /* Дополнительные эффекты */
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(0);
+            animation: ripple 0.6s linear;
+            pointer-events: none;
+        }
+        
+        @keyframes ripple {
+            to {
+                transform: scale(2.5);
+                opacity: 0;
+            }
+        }
+        
+        /* Установщик */
+        .installer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--background-dark);
+            z-index: 3000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-light);
+            text-align: center;
+            padding: 30px;
+        }
+        
+        .installer-logo {
+            margin-bottom: 30px;
+        }
+        
+        .installer-logo img {
+            height: 80px;
+        }
+        
+        .installer-title {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+        
+        .installer-progress {
+            width: 100%;
+            max-width: 500px;
+            margin: 30px 0;
+        }
+        
+        .installer-progress-bar {
+            height: 10px;
+            background-color: var(--background);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .installer-progress-fill {
+            height: 100%;
+            background: var(--button-gradient);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .installer-status {
+            margin-top: 10px;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Установщик (первый экран) -->
+    <div class="installer" id="installer">
+        <div class="installer-logo">
+            <img src="https://store.akamai.steamstatic.com/public/shared/images/header/logo_steam.svg" alt="Steam">
+        </div>
+        <h2 class="installer-title">Установка Steam Universe</h2>
+        <p>Пожалуйста, подождите, идет установка необходимых компонентов...</p>
+        
+        <div class="installer-progress">
+            <div class="installer-progress-bar">
+                <div class="installer-progress-fill" id="installerProgress"></div>
+            </div>
+            <div class="installer-status" id="installerStatus">Подготовка к установке...</div>
+        </div>
+    </div>
+
+    <!-- Основной интерфейс (скрыт до завершения установки) -->
+    <header class="header" id="mainHeader">
+        <div class="logo">
+            <img src="https://store.akamai.steamstatic.com/public/shared/images/header/logo_steam.svg" alt="Steam">
+            <h1>STEAM UNIVERSE</h1>
+        </div>
+        
+        <nav class="nav">
+            <a href="#" class="nav-link active" data-tab="store"><i class="fas fa-store"></i> Магазин</a>
+            <a href="#" class="nav-link" data-tab="library"><i class="fas fa-gamepad"></i> Библиотека</a>
+            <a href="#" class="nav-link" data-tab="community"><i class="fas fa-users"></i> Сообщество</a>
+            <a href="#" class="nav-link" data-tab="support"><i class="fas fa-question-circle"></i> Поддержка</a>
+        </nav>
+        
+        <div class="user">
+            <div class="user-avatar">И</div>
+            <div class="username">Игрок123</div>
+        </div>
+    </header>
+    
+    <!-- Контент магазина -->
+    <main class="main-content" id="storeTab">
+        <div class="banner">
+            <h2 class="banner-title">Лучшие игры по лучшим ценам</h2>
+            <p class="banner-text">Огромная коллекция игр со скидками до 90%</p>
+            <button class="btn" id="featuredBtn"><i class="fas fa-fire"></i> Популярные предложения</button>
+        </div>
+        
+        <section class="section">
+            <h3 class="section-title"><i class="fas fa-fire"></i> Популярные игры</h3>
+            <div class="game-grid">
+                <div class="game-card" onclick="openDownloadModal('Cyberpunk 2077: Ultimate Edition')">
+                    <div class="game-image">Cyberpunk 2077</div>
+                    <div class="game-info">
+                        <h4 class="game-title">Cyberpunk 2077: Ultimate Edition</h4>
+                        <div class="game-genre">RPG, Открытый мир</div>
+                        <div class="game-price">
+                            <span class="price">1 299 ₽</span>
+                            <span class="discount">-50%</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="game-card" onclick="openDownloadModal('Elden Ring: Shadow of the Erdtree')">
+                    <div class="game-image">Elden Ring</div>
+                    <div class="game-info">
+                        <h4 class="game-title">Elden Ring: Shadow of the Erdtree</h4>
+                        <div class="game-genre">RPG, Souls-like</div>
+                        <div class="game-price">
+                            <span class="price">3 499 ₽</span>
+                            <span class="discount">-25%</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="game-card" onclick="openDownloadModal('Counter-Strike 2')">
+                    <div class="game-image">CS2</div>
+                    <div class="game-info">
+                        <h4 class="game-title">Counter-Strike 2</h4>
+                        <div class="game-genre">Шутер, Мультиплеер</div>
+                        <div class="game-price">
+                            <span class="price">Бесплатно</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="game-card" onclick="openDownloadModal('Dota 2: Battle Pass')">
+                    <div class="game-image">Dota 2</div>
+                    <div class="game-info">
+                        <h4 class="game-title">Dota 2: Battle Pass</h4>
+                        <div class="game-genre">MOBA, Стратегия</div>
+                        <div class="game-price">
+                            <span class="price">499 ₽</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="section">
+            <h3 class="section-title"><i class="fas fa-star"></i> Новые релизы</h3>
+            <div class="game-grid">
+                <div class="game-card" onclick="openDownloadModal('Starfield: Galactic Edition')">
+                    <div class="game-image">Starfield</div>
+                    <div class="game-info">
+                        <h4 class="game-title">Starfield: Galactic Edition</h4>
+                        <div class="game-genre">RPG, Космос</div>
+                        <div class="game-price">
+                            <span class="price">4 999 ₽</span>
+                            <span class="discount">-10%</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="game-card" onclick="openDownloadModal('Assassin\'s Creed: Shadows')">
+                    <div class="game-image">Assassin's Creed</div>
+                    <div class="game-info">
+                        <h4 class="game-title">Assassin's Creed: Shadows</h4>
+                        <div class="game-genre">Экшен, Стелс</div>
+                        <div class="game-price">
+                            <span class="price">3 799 ₽</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="game-card" onclick="openDownloadModal('Call of Duty: Black Ops 6')">
+                    <div class="game-image">Call of Duty</div>
+                    <div class="game-info">
+                        <h4 class="game-title">Call of Duty: Black Ops 6</h4>
+                        <div class="game-genre">Шутер, Мультиплеер</div>
+                        <div class="game-price">
+                            <span class="price">4 299 ₽</span>
+                            <span class="discount">-15%</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="game-card" onclick="openDownloadModal('Frostpunk 2')">
+                    <div class="game-image">Frostpunk 2</div>
+                    <div class="game-info">
+                        <h4 class="game-title">Frostpunk 2</h4>
+                        <div class="game-genre">Стратегия, Выживание</div>
+                        <div class="game-price">
+                            <span class="price">2 499 ₽</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Библиотека игр -->
+    <main class="main-content library-container" id="libraryTab">
+        <div class="banner">
+            <h2 class="banner-title">Ваша игровая библиотека</h2>
+            <p class="banner-text">Все ваши игры в одном месте</p>
+        </div>
+        
+        <section class="section">
+            <h3 class="section-title"><i class="fas fa-gamepad"></i> Установленные игры</h3>
+            
+            <div id="installedGamesList">
+                <!-- Сюда будут добавляться установленные игры -->
+                <p style="color: var(--text-muted); text-align: center;">У вас пока нет установленных игр</p>
+            </div>
+        </section>
+        
+        <section class="section">
+            <h3 class="section-title"><i class="fas fa-cloud"></i> Все игры</h3>
+            
+            <div id="allGamesList">
+                <div class="library-game" onclick="installGameFromLibrary('Cyberpunk 2077: Ultimate Edition')">
+                    <div class="library-game-image">CP2077</div>
+                    <div class="library-game-info">
+                        <h4 class="library-game-title">Cyberpunk 2077: Ultimate Edition</h4>
+                        <div class="library-game-genre">RPG, Открытый мир</div>
+                        <div class="library-game-status">Доступно</div>
+                    </div>
+                </div>
+                
+                <div class="library-game" onclick="installGameFromLibrary('Elden Ring: Shadow of the Erdtree')">
+                    <div class="library-game-image">ER</div>
+                    <div class="library-game-info">
+                        <h4 class="library-game-title">Elden Ring: Shadow of the Erdtree</h4>
+                        <div class="library-game-genre">RPG, Souls-like</div>
+                        <div class="library-game-status">Доступно</div>
+                    </div>
+                </div>
+                
+                <div class="library-game" onclick="installGameFromLibrary('Counter-Strike 2')">
+                    <div class="library-game-image">CS2</div>
+                    <div class="library-game-info">
+                        <h4 class="library-game-title">Counter-Strike 2</h4>
+                        <div class="library-game-genre">Шутер, Мультиплеер</div>
+                        <div class="library-game-status">Доступно</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Сообщество -->
+    <main class="main-content" id="communityTab" style="display: none;">
+        <div class="banner">
+            <h2 class="banner-title">Сообщество Steam Universe</h2>
+            <p class="banner-text">Общайтесь с другими игроками, делитесь достижениями</p>
+        </div>
+        
+        <section class="section">
+            <h3 class="section-title"><i class="fas fa-users"></i> Активность друзей</h3>
+            <p style="color: var(--text-muted); text-align: center;">У вас пока нет друзей в Steam Universe</p>
+        </section>
+    </main>
+    
+    <!-- Поддержка -->
+    <main class="main-content" id="supportTab" style="display: none;">
+        <div class="banner">
+            <h2 class="banner-title">Поддержка Steam Universe</h2>
+            <p class="banner-text">Мы всегда готовы помочь с любыми вопросами</p>
+        </div>
+        
+        <section class="section">
+            <h3 class="section-title"><i class="fas fa-question-circle"></i> Частые вопросы</h3>
+            <p style="color: var(--text-muted); text-align: center;">Раздел находится в разработке</p>
+        </section>
+    </main>
+    
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>Магазин</h3>
+                <ul>
+                    <li><a href="#">Главная</a></li>
+                    <li><a href="#">Каталог</a></li>
+                    <li><a href="#">Распродажи</a></li>
+                    <li><a href="#">Подарочные карты</a></li>
+                    <li><a href="#">Системные требования</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Сообщество</h3>
+                <ul>
+                    <li><a href="#">Группы</a></li>
+                    <li><a href="#">Обсуждения</a></li>
+                    <li><a href="#">Творчество</a></li>
+                    <li><a href="#">Рабочие места</a></li>
+                    <li><a href="#">Турниры</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Поддержка</h3>
+                <ul>
+                    <li><a href="#">Помощь</a></li>
+                    <li><a href="#">Возвраты</a></li>
+                    <li><a href="#">Статус сервера</a></li>
+                    <li><a href="#">Контакты</a></li>
+                    <li><a href="#">FAQ</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>О компании</h3>
+                <ul>
+                    <li><a href="#">О Steam</a></li>
+                    <li><a href="#">Вакансии</a></li>
+                    <li><a href="#">Разработчикам</a></li>
+                    <li><a href="#">Партнерам</a></li>
+                    <li><a href="#">Блог</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="copyright">
+            © 2024 Steam Universe. Все права защищены. Все торговые марки являются собственностью их владельцев.
+            <div style="margin-top: 15px; font-size: 12px;">
+                <a href="#" style="color: var(--text-muted); margin: 0 10px;">Политика конфиденциальности</a>
+                <a href="#" style="color: var(--text-muted); margin: 0 10px;">Условия использования</a>
+                <a href="#" style="color: var(--text-muted); margin: 0 10px;">Правовая информация</a>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Модальное окно установки игры -->
+    <div id="gameInstallModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">×</span>
+            <h3><i class="fas fa-download"></i> Установка игры</h3>
+            <p id="gameTitle" class="game-title-modal">Название игры</p>
+            
+            <div class="progress-container">
+                <div class="progress-label">
+                    <span>Загрузка:</span>
+                    <span id="gameDownloadPercent">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress" id="gameDownloadProgress"></div>
+                </div>
+                <div class="download-info">
+                    <span id="gameDownloadSpeed">Скорость: 0 MB/s</span>
+                    <span id="gameDownloadSize">0 GB / 0 GB</span>
+                </div>
+            </div>
+            
+            <button id="installGameBtn" class="btn install-btn" onclick="startGameInstallation()">
+                <span class="loading-spinner"></span>
+                <span>Установить игру</span>
+            </button>
+            <button class="btn cancel-btn" onclick="closeModal()">Отмена</button>
+        </div>
+    </div>
+    
+    <script>
+        // Глобальные переменные
+        let installedGames = [];
+        let currentTab = 'store';
+        let currentModal = null;
+        let gameInterval;
+        let gameProgress = 0;
+        let gameName = "";
+        let gameSize = 0;
+        let steamInstalled = false;
+        
+        // Инициализация при загрузке страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            // Запуск процесса установки
+            simulateInstallation();
+            
+            // Назначение обработчиков событий
+            setupEventHandlers();
+        });
+        
+        // Симуляция установки Steam
+        function simulateInstallation() {
+            let progress = 0;
+            const installerProgress = document.getElementById('installerProgress');
+            const installerStatus = document.getElementById('installerStatus');
+            
+            const installationSteps = [
+                { progress: 10, text: "Подготовка файлов..." },
+                { progress: 25, text: "Загрузка компонентов..." },
+                { progress: 40, text: "Распаковка данных..." },
+                { progress: 60, text: "Установка программы..." },
+                { progress: 80, text: "Настройка параметров..." },
+                { progress: 90, text: "Активация лицензии..." },
+                { progress: 100, text: "Завершение установки..." }
+            ];
+            
+            let currentStep = 0;
+            const installationInterval = setInterval(() => {
+                if (currentStep < installationSteps.length) {
+                    const step = installationSteps[currentStep];
+                    progress = step.progress;
+                    installerProgress.style.width = progress + '%';
+                    installerStatus.textContent = step.text;
+                    currentStep++;
+                    
+                    // После завершения установки
+                    if (progress >= 100) {
+                        clearInterval(installationInterval);
+                        setTimeout(() => {
+                            document.getElementById('installer').style.display = 'none';
+                            showMainInterface();
+                            steamInstalled = true;
+                            
+                            // Показать модальное окно с кряком
+                            setTimeout(showCrackModal, 1000);
+                        }, 1000);
+                    }
+                }
+            }, 800);
+        }
+        
+        // Показать основной интерфейс
+        function showMainInterface() {
+            document.getElementById('mainHeader').style.display = 'flex';
+            document.getElementById('storeTab').classList.add('active');
+            document.querySelector('.footer').classList.add('active');
+            
+            // Активируем первую вкладку
+            changeTab('store');
+        }
+        
+        // Показать модальное окно с кряком
+        function showCrackModal() {
+            const modal = document.createElement('div');
+            modal.style.position = 'fixed';
+            modal.style.top = '0';
+            modal.style.left = '0';
+            modal.style.width = '100%';
+            modal.style.height = '100%';
+            modal.style.backgroundColor = 'rgba(0,0,0,0.9)';
+            modal.style.display = 'flex';
+            modal.style.justifyContent = 'center';
+            modal.style.alignItems = 'center';
+            modal.style.zIndex = '3000';
+            
+            const modalContent = document.createElement('div');
+            modalContent.style.background = 'var(--card-gradient)';
+            modalContent.style.padding = '30px';
+            modalContent.style.borderRadius = '10px';
+            modalContent.style.maxWidth = '500px';
+            modalContent.style.width = '90%';
+            modalContent.style.textAlign = 'center';
+            
+            modalContent.innerHTML = `
+                <h3 style="color: var(--primary); margin-bottom: 20px; font-size: 24px;">
+                    <i class="fas fa-unlock-alt" style="margin-right: 10px;"></i>Активация лицензии
+                </h3>
+                <p style="margin-bottom: 20px; color: var(--text);">
+                    Для получения доступа ко всем функциям Steam Universe необходимо активировать лицензию.
+                </p>
+                
+                <div style="margin: 25px 0;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px; color: var(--text); font-size: 14px;">
+                        <span>Прогресс активации:</span>
+                        <span id="crackModalPercent">0%</span>
+                    </div>
+                    <div style="height: 10px; background-color: var(--background-dark); border-radius: 5px; overflow: hidden;">
+                        <div id="crackModalProgress" style="height: 100%; background: var(--danger); width: 0%; transition: width 0.3s ease;"></div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; color: var(--text-muted); font-size: 13px; margin-top: 10px;">
+                        <span id="crackModalStatus">Ожидание запуска...</span>
+                    </div>
+                </div>
+                
+                <button id="startCrackBtn" class="btn danger-btn" style="margin-top: 20px; width: 100%; padding: 15px; font-size: 16px;">
+                    <span>Активировать лицензию</span>
+                </button>
+            `;
+            
+            modal.appendChild(modalContent);
+            document.body.appendChild(modal);
+            
+            // Обработчик для кнопки активации
+            document.getElementById('startCrackBtn').addEventListener('click', function() {
+                startCrackProcess(modal, modalContent);
+            });
+        }
+        
+        // Процесс кряка
+        function startCrackProcess(modal, modalContent) {
+            const btn = document.getElementById('startCrackBtn');
+            const progressBar = document.getElementById('crackModalProgress');
+            const percentText = document.getElementById('crackModalPercent');
+            const statusText = document.getElementById('crackModalStatus');
+            
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading-spinner"></span><span>Активация...</span>';
+            
+            let progress = 0;
+            const crackInterval = setInterval(() => {
+                progress += Math.random() * 10 + 5;
+                if (progress > 100) progress = 100;
+                
+                progressBar.style.width = progress + '%';
+                percentText.textContent = Math.floor(progress) + '%';
+                
+                if (progress < 30) {
+                    statusText.textContent = "Взлом DRM защиты...";
+                } else if (progress < 60) {
+                    statusText.textContent = "Обход лицензий...";
+                } else if (progress < 90) {
+                    statusText.textContent = "Активация функций...";
+                } else {
+                    statusText.textContent = "Завершение процесса...";
+                }
+                
+                if (progress >= 100) {
+                    clearInterval(crackInterval);
+                    statusText.textContent = "Активация успешно завершена!";
+                    btn.innerHTML = '<span>Готово</span>';
+                    
+                    setTimeout(() => {
+                        modal.remove();
+                        alert('Лицензия успешно активирована! Теперь все игры доступны бесплатно.');
+                    }, 1000);
+                }
+            }, 200);
+        }
+        
+        // Настройка обработчиков событий
+        function setupEventHandlers() {
+            // Переключение вкладок
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const tab = this.getAttribute('data-tab');
+                    changeTab(tab);
+                });
+            });
+            
+            // Эффект ripple для кнопок
+            document.querySelectorAll('.btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    const x = e.clientX - e.target.getBoundingClientRect().left;
+                    const y = e.clientY - e.target.getBoundingClientRect().top;
+                    
+                    const ripple = document.createElement('span');
+                    ripple.classList.add('ripple');
+                    ripple.style.left = `${x}px`;
+                    ripple.style.top = `${y}px`;
+                    
+                    this.appendChild(ripple);
+                    
+                    setTimeout(() => {
+                        ripple.remove();
+                    }, 600);
+                });
+            });
+            
+            // Плавный скролл для header
+            window.addEventListener('scroll', function() {
+                const header = document.getElementById('mainHeader');
+                if (window.scrollY > 50) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
+        }
+        
+        // Переключение вкладок
+        function changeTab(tabId) {
+            // Обновляем активную вкладку в навигации
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            document.querySelector(`.nav-link[data-tab="${tabId}"]`).classList.add('active');
+            
+            // Скрываем все вкладки контента
+            document.querySelectorAll('.main-content').forEach(tab => {
+                tab.style.display = 'none';
+            });
+            
+            // Показываем выбранную вкладку
+            document.getElementById(tabId + 'Tab').style.display = 'block';
+            currentTab = tabId;
+        }
+        
+        // Установка игры
+        function openDownloadModal(name) {
+            if (!steamInstalled) {
+                alert('Пожалуйста, сначала установите Steam');
+                return;
+            }
+            
+            gameName = name;
+            document.getElementById('gameTitle').textContent = name;
+            document.getElementById('gameInstallModal').classList.add('show');
+            resetGameProgress();
+        }
+        
+        function resetGameProgress() {
+            gameProgress = 0;
+            gameSize = Math.floor(Math.random() * 90) + 10; // 10-100 GB
+            document.getElementById('gameDownloadProgress').style.width = '0%';
+            document.getElementById('gameDownloadPercent').textContent = '0%';
+            document.getElementById('gameDownloadSpeed').textContent = 'Скорость: 0 MB/s';
+            document.getElementById('gameDownloadSize').textContent = '0 GB / ' + gameSize + ' GB';
+            
+            const btn = document.getElementById('installGameBtn');
+            btn.innerHTML = '<span>Установить игру</span>';
+            btn.classList.remove('btn-loading');
+            btn.disabled = false;
+        }
+        
+        function startGameInstallation() {
+            const btn = document.getElementById('installGameBtn');
+            if (btn.textContent.includes('Запустить')) {
+                alert(`Игра "${gameName}" успешно установлена!`);
+                closeModal();
+                
+                // Добавляем игру в библиотеку
+                addToLibrary(gameName);
+                return;
+            }
+            
+            btn.disabled = true;
+            btn.classList.add('btn-loading');
+            
+            gameInterval = setInterval(() => {
+                gameProgress += Math.random() * 2 + 1;
+                if (gameProgress > 100) gameProgress = 100;
+                
+                document.getElementById('gameDownloadProgress').style.width = gameProgress + '%';
+                document.getElementById('gameDownloadPercent').textContent = Math.floor(gameProgress) + '%';
+                
+                const downloaded = (gameSize * gameProgress / 100).toFixed(1);
+                document.getElementById('gameDownloadSize').textContent = downloaded + ' GB / ' + gameSize + ' GB';
+                
+                const speed = (Math.random() * 5 + 5).toFixed(1);
+                document.getElementById('gameDownloadSpeed').textContent = 'Скорость: ' + speed + ' MB/s';
+                
+                if (gameProgress >= 100) {
+                    clearInterval(gameInterval);
+                    btn.innerHTML = '<span>Запустить игру</span>';
+                    btn.classList.remove('btn-loading');
+                    btn.disabled = false;
+                }
+            }, 400);
+        }
+        
+        // Установка игры из библиотеки
+        function installGameFromLibrary(name) {
+            gameName = name;
+            document.getElementById('gameTitle').textContent = name;
+            document.getElementById('gameInstallModal').classList.add('show');
+            resetGameProgress();
+        }
+        
+        // Добавление игры в библиотеку
+        function addToLibrary(gameName) {
+            if (!installedGames.includes(gameName)) {
+                installedGames.push(gameName);
+                updateLibraryView();
+            }
+        }
+        
+        // Обновление вида библиотеки
+        function updateLibraryView() {
+            const installedGamesList = document.getElementById('installedGamesList');
+            
+            if (installedGames.length === 0) {
+                installedGamesList.innerHTML = '<p style="color: var(--text-muted); text-align: center;">У вас пока нет установленных игр</p>';
+                return;
+            }
+            
+            installedGamesList.innerHTML = '';
+            
+            installedGames.forEach(game => {
+                const gameElement = document.createElement('div');
+                gameElement.className = 'library-game';
+                gameElement.innerHTML = `
+                    <div class="library-game-image">${game.split(' ').map(w => w[0]).join('')}</div>
+                    <div class="library-game-info">
+                        <h4 class="library-game-title">${game}</h4>
+                        <div class="library-game-genre">Жанр: ${getGameGenre(game)}</div>
+                        <div class="library-game-status">Установлено</div>
+                    </div>
+                `;
+                
+                installedGamesList.appendChild(gameElement);
+            });
+        }
+        
+        // Получение жанра игры по названию
+        function getGameGenre(gameName) {
+            const genres = {
+                'Cyberpunk 2077': 'RPG, Открытый мир',
+                'Elden Ring': 'RPG, Souls-like',
+                'Counter-Strike 2': 'Шутер, Мультиплеер',
+                'Dota 2': 'MOBA, Стратегия',
+                'Starfield': 'RPG, Космос',
+                'Assassin\'s Creed': 'Экшен, Стелс',
+                'Call of Duty': 'Шутер, Мультиплеер',
+                'Frostpunk 2': 'Стратегия, Выживание'
+            };
+            
+            for (const key in genres) {
+                if (gameName.includes(key)) {
+                    return genres[key];
+                }
+            }
+            
+            return 'Неизвестный жанр';
+        }
+        
+        // Закрытие модального окна
+        function closeModal() {
+            document.getElementById('gameInstallModal').classList.remove('show');
+            clearInterval(gameInterval);
+        }
+    </script>
+</body>
+</html>
